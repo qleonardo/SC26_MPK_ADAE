@@ -1,0 +1,387 @@
+% 'nonacm' to remove any running header
+\documentclass[conference]{IEEEtran}
+
+\usepackage{cite}
+\usepackage{amsmath,amsfonts}
+\usepackage{algorithmic}
+\usepackage{graphicx}
+\usepackage{textcomp}
+\usepackage{xcolor}
+\usepackage{booktabs}
+\usepackage{tagging}
+
+% 移除缺失的包，并提供命令的替代定义以确保成功编译
+\usepackage{sc26repro}
+% \newcommand{\appendixAD}{}
+% \newcounter{artifactcounter}
+% \newcommand{\newartifact}{\stepcounter{artifactcounter}\vspace{1em}\hrule\vspace{1em}\subsection*{Artifact \theartifactcounter}}
+% \newcommand{\artrel}{\subsubsection*{Relation to the paper}}
+% \newcommand{\artexp}{\subsubsection*{Expected Results}}
+% \newcommand{\arttime}{\subsubsection*{Estimated Time}}
+% \newcommand{\artin}{\subsubsection*{Artifact Setup}}
+% \newcommand{\artinpart}[1]{\paragraph*{#1}}
+% \newcommand{\artcomp}{\subsubsection*{Artifact Execution}}
+% \newcommand{\artout}{\subsubsection*{Artifact Analysis}}
+
+\pagenumbering{gobble} % no page numbers
+
+% Uncomment/comment the following usetag lines
+% if you would like to get an explanation or an example.
+% Don't forget to comment them for the final submission.
+\usetag{explanation}
+\usetag{example}
+
+\begin{document}
+
+\twocolumn[%
+{\begin{center}
+\Huge
+Appendix: Artifact Description
+% /Artifact Evaluation
+\end{center}}
+]
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%  AD Appendix
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+\appendixAD
+
+\section{Overview of Contributions and Artifacts}
+
+\subsection{Paper's Main Contributions}
+
+% \artexpl{
+% Provide a list of all main contributions of the paper.
+% }
+
+\begin{description}
+\item[$C_1$] We present FastMPK, a high-performance sparse matrix power kernel designed to run efficiently on both CPUs and GPUs.
+%scalable blocking strategy to reuse matrix
+%elements in cache by recursively partitioning UDG and executing Matrix-Power Kernel (MPK) on submatrices with a specific order.
+%\item[$C_2$] We integrate symmetric SpMV with our cache reuse technique to develop a unified MPK implementation and further
+%improve performance on symmetric sparse matrices.
+\item[$C_2$] 
+We propose a cache-reuse strategy and develop a dependency-aware parallelization scheme for FastMPK. %FastMPK can reduce the memory traffic of MPK. 
+Our evaluations show significant advantages of FastMPK over state-of-the-art approaches. %implementations on both CPUs and GPUs.
+
+\item[$C_3$] We demonstrate the practical impact of FastMPK by integrating it into a polynomial preconditioned GMRES solver, where it achieves end-to-end speedups with minimal preprocessing overhead.
+
+\end{description}
+
+\subsection{Computational Artifacts}
+
+% \artexpl{
+% List the computational artifacts related to this paper along with their respective DOIs. Note that all computational artifacts may be archived under a single DOI.
+% }
+
+% \artsampl{
+\begin{description}
+\item[$A_1$] https://github.com/qleonardo/FastMPK/CPU
+\item[$A_2$] https://github.com/qleonardo/FastMPK/GPU
+\item[$A_3$] https://github.com/qleonardo/FastMPK/GMRES
+
+\item[$A_4$]Race-based MPK\footnote{https://github.com/RRZE-HPC/RACE} 
+
+https://doi.org/10.5281/zenodo.13071391
+
+\end{description}
+% }
+
+% \artexpl{
+% Provide a table with the relevant computational artifacts,
+% highlight their relation to the contributions (from above) and
+% point to the elements in the paper that are reproducible by each artifact, e.g.,
+% which figures or tables were generated with the artifact.
+% }
+
+% \artsampl{
+\begin{center}
+\begin{tabular}{rll}
+\toprule
+Artifact ID  &  Contributions &  Related \\
+             &  Supported     &  Paper Elements \\
+\midrule
+$A_1$   &  $C_1, C_2$ & Table IV \\
+        &        & Figures 3, 5, 9, 11-13 \\
+\midrule
+$A_2$   &  $C_1, C_2$ & Table IV \\
+        &        & Figures 3, 5, 10-13\\
+\midrule
+$A_3$   &  $C_3$ & Figure 14 \\
+        % &        & Figures 6-9, 11\\
+\midrule
+$A_4$   &  $C_2$ & Table IV \\
+        &        & Figures 3, 9, 11\\
+\bottomrule
+\end{tabular}
+\end{center}
+% }
+
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\section{Artifact Identification}
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+% \artexpl{
+% Provide the following six subsections for each computational artifact $A_i$.
+% }
+
+\newartifact
+\artrel
+
+$A_1$ runs on CPUs, which includes the CSR-based MPK, MPK based on SpMV from the Intel oneAPI Math Kernel Library (oneMKL)\footnote{https://www.intel.com/content/www/us/en/developer/tools/oneapi/onemkl.html}, FastMPK (w/o Level), and FastMPK. We compare different MPK implementations for performance evaluation (described as contribution $C_2$).
+
+
+\artexp
+
+% \artexpl{
+% Provide a higher level description of what outcome to expect from the corresponding experiments. Provide an explanation of how the results substantiate the main contributions.
+% }
+
+
+% \artsampl{
+The measured performance is reported in GFLOPS. Compared to other MPK implementations, FastMPK should show higher performance on most matrices.
+% }
+
+\arttime
+
+% \artexpl{
+% Estimate the time required to reproduce the artifact, providing separate estimates for the individual steps: Artifact Setup, Artifact Execution, and Artifact Analysis.
+% }
+
+The expected computational times of this artifact on the Intel Xeon Max 9468 CPU, AMD EPYC 7742, and Huawei Kunpeng 920 are about 180~mins, 210~mins, and 240~mins, respectively. 
+
+
+% \artsampl{
+
+% }
+
+\artin
+
+\artinpart{Hardware}
+
+% \artexpl{
+Intel Xeon Max 9468 @ 2.1GHz (x86), AMD EPYC 7742 @ 1.5GHz (x86), and Huawei Kunpeng 920 @ 2.6GHz (ARM).
+% }
+
+\artinpart{Software}
+
+% \artexpl{
+The required software package is Intel oneMKL 2025.1.
+% }
+
+\artinpart{Datasets / Inputs}
+
+% \artexpl{
+110 large sparse matrices (with a number of non-zeros $\ge$ 8,000,000) from the SuiteSparse Matrix Collection\footnote{https://sparse.tamu.edu/}.
+% }
+
+\artinpart{Installation and Deployment}
+
+% \artexpl{
+On Intel CPUs, all computational artifacts are compiled in double precision with the -O3 flag using Intel oneAPI 2025.1. On AMD and Huawei CPUs, we use GCC 11.2.1. 
+We utilize all 48/64/32 cores on the Intel/AMD/Huawei CPUs, respectively. We set thread affinity for all tests and bind a software thread to an individual physical core (without hyperthreading). 
+% }
+
+\artcomp
+
+% \artexpl{
+
+$T_1$: We use the 110 matrices as the input matrices, and randomly generate a corresponding input vector for each matrix. The dataset is then used as input for $T_2$ to perform MPK.
+
+$T_2$: We run the computational artifact 100 times for each pair of input matrix and vector, and measure the average GFLOPS.
+% }
+
+\artout
+Based on the measured average GFLOPS, we can generate Table IV and plot Figures 9, 11, and 13.
+
+\newartifact
+
+\artrel
+
+$A_2$ runs on GPUs, which includes the CSR-based MPK, MPK based on cuSPARSE, and FastMPK. We compare different MPK implementations for performance evaluation (described as contribution $C_2$).
+
+\artexp
+
+% \artexpl{
+% Provide a higher level description of what outcome to expect from the corresponding experiments. Provide an explanation of how the results substantiate the main contributions.
+% }
+
+
+% \artsampl{
+The measured performance is reported in GFLOPS. Compared to other MPK implementations, FastMPK should show higher performance on most matrices.
+% }
+
+\arttime
+
+% \artexpl{
+% Estimate the time required to reproduce the artifact, providing separate estimates for the individual steps: Artifact Setup, Artifact Execution, and Artifact Analysis.
+% }
+
+The expected computational times of this artifact on NVIDIA H100 and A100 GPUs are about 120 and 180~mins, respectively.
+
+% \artsampl{
+
+% }
+
+\artin
+
+\artinpart{Hardware}
+
+% \artexpl{
+NVIDIA H100 GPU and A100 GPU.
+% }
+
+\artinpart{Software}
+
+% \artexpl{
+No additional software packages are required to compile and run $A_2$.
+% }
+
+\artinpart{Datasets / Inputs}
+
+The same as computational artifact $A_1$.
+
+\artinpart{Installation and Deployment}
+All computational artifacts are compiled in double precision with the -O3 flag. On the H100 GPU, the computational artifacts are compiled using CUDA 12.1. On the A100 GPU, we use CUDA 11.7. 
+We run different MPK implementations 100 times for each matrix and measure the average GFLOPS. 
+
+\artcomp
+
+The same as computational artifact $A_1$.
+
+\artout
+Based on the measured average GFLOPS, we can generate Table IV and plot Figures 10, 11, and 13.
+
+
+\newartifact
+
+\artrel
+
+$A_3$ integrates a polynomial preconditioned GMRES solver in the Ginkgo library using FastMPK and the CSR-based MPK.
+
+\artexp
+
+The GMRES solver using FastMPK should be faster than the solver using CSR-based MPK on most of the matrices.
+
+\arttime
+
+The expected computational times of this artifact on the Intel Xeon Gold 6258R CPU and NVIDIA H100 GPU are about 20~mins and 10~mins, respectively.
+
+
+% \artsampl{
+
+% }
+
+\artin
+
+\artinpart{Hardware}
+
+Intel Xeon Gold 6258R CPU @ 2.4GHz and NVIDIA H100 GPU.
+
+\artinpart{Software}
+
+% \artexpl{
+Ginkgo (High-performance numerical linear algebra library)\footnote{https://github.com/ginkgo-project/ginkgo}.
+% }
+
+\artinpart{Datasets / Inputs}
+
+% \artexpl{
+7 representative sparse matrices from the SuiteSparse Matrix Collection.
+% }
+
+\artinpart{Installation and Deployment}
+
+The computational artifact is compiled in double precision with the -O3 flag. On the H100 GPU, the computational artifact is compiled using CUDA 12.1. On Intel CPUs, the artifact is compiled using Intel oneAPI 2025.1.
+
+\artcomp
+
+$T_1$: We use the 7 matrices as the input matrices and randomly generate a corresponding right-hand side (RHS) vector $b$ for each matrix. The dataset is then used as input for $A_3$ to solve $Ax = b$.
+
+$T_2$: We run the computational artifact 100 times for each pair of input matrix and vector, and measure the average execution time.
+
+\artout
+Based on the measured average time, we can plot Figure 14.
+
+
+\newartifact
+\artrel
+
+$A_4$ (referred to as \textit{RACE} in the paper) is used as a baseline to compare against our work ($A_1$) for performance evaluation (described as contribution $C_2$).
+
+\artexp
+
+$A_4$ should be slower than FastMPK on most of the matrices.
+
+\arttime
+
+The expected computational times of this artifact on the Intel Xeon Max 9468 CPU, AMD EPYC 7742, and Huawei Kunpeng 920 are about 90~mins, 120~mins, and 150~mins, respectively. 
+
+
+
+\artin
+
+\artinpart{Hardware}
+
+The same as computational artifact $A_1$.
+
+\artinpart{Software}
+
+All required software packages for RACE are available at the provided link (https://github.com/RRZE-HPC/RACE) and can be downloaded together with the RACE repository.
+
+
+\artinpart{Datasets / Inputs}
+The same as computational artifact $A_1$.
+
+\artinpart{Installation and Deployment}
+
+The same as computational artifact $A_1$.
+
+\artcomp
+
+The same as computational artifact $A_1$.
+
+\artout
+Based on the measured average GFLOPS, we can generate Table IV and plot Figures 9 and 11.
+
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%  AE Appendix
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+% \newpage
+% \appendixAE
+
+% \arteval{1}
+% \artin
+
+% \artexpl{
+% Provide instructions for installing and compiling libraries and code.
+% Offer guidelines on deploying the code to resources.
+% }
+
+% \artcomp
+
+% \artexpl{
+% Describe the experiment workflow.
+% If encapsulated within a workflow description or equivalent (such as a makefile or script), clearly outline the primary tasks and their interdependencies. Detail the main steps in the workflow. Merely instructing to “Run script.sh” is inadequate.
+% }
+
+% \artout
+
+% \artexpl{
+% \begin{itemize}
+%     \item Provide a description of the expected results and a methodology for evaluating these results.
+%     \item Explain how the expected results from the experiment workflow correlate with the contributions stated in the article.
+%     \item For example, if the article presents results in a figure, the artifact evaluation should also produce a similar figure, depicting the same generalizable outcome. Authors must focus on these aspects to reduce the time required for others to understand and verify an artifact.
+% \end{itemize}
+% }
+
+
+% \arteval{2}
+% \artin
+% \artcomp
+% \artout
+
+\end{document}
