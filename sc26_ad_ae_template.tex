@@ -136,7 +136,7 @@ NVIDIA A100 (GPU)          & $\sim$180 \\
 
 \artinpart{Installation and Deployment}
 
-\emph{CPU}: Compile with \texttt{make}. On Intel, the Makefile uses \texttt{icpc} with MKL; on AMD/Huawei, switch to \texttt{g++} and remove MKL flags. Threads are bound to physical cores (no hyperthreading), one thread per core. On Xeon Max 9468, use HBM-only mode.
+\emph{CPU}: Compile with \texttt{make}. On Intel, the Makefile uses \texttt{icpc} with MKL; on AMD/Huawei, switch to \texttt{g++} and remove MKL flags. Set thread affinity with \texttt{OMP\_PROC\_BIND=close} and \texttt{numactl --physcpubind=... --membind=0}, one thread per physical core (no hyperthreading). On Xeon Max 9468, use HBM-only mode.
 
 \emph{GPU}: Compile with \texttt{make}. Uses \texttt{nvcc} with \texttt{-O3}, targeting the appropriate GPU architecture.
 
@@ -251,7 +251,7 @@ All platforms produce a single executable \texttt{main} (double precision).
 
 \artinpart{Deployment}
 
-Set thread affinity on CPUs. On Xeon Max 9468, configure HBM-only mode. On GPUs, ensure one GPU is visible. No additional environment setup is needed beyond what is described in the software dependencies.
+Set thread affinity with \texttt{OMP\_PROC\_BIND=close} and \texttt{numactl --physcpubind=... --membind=0} on CPUs (one thread per physical core, no hyperthreading). On Xeon Max 9468, configure HBM-only mode. On GPUs, ensure one GPU is visible.
 
 \artcomp
 
@@ -291,7 +291,7 @@ where \texttt{<path>} points to the Ginkgo CMake configuration (e.g., \texttt{/u
 
 \artinpart{Deployment}
 
-Set \texttt{OMP\_NUM\_THREADS} on CPU. On GPU, ensure a CUDA-capable GPU is available. No other configuration is needed.
+Set \texttt{OMP\_NUM\_THREADS} and \texttt{OMP\_PROC\_BIND=close} with \texttt{numactl --physcpubind=... --membind=0} on CPU (one thread per physical core). On GPU, ensure a CUDA-capable GPU is available.
 
 \artcomp
 
