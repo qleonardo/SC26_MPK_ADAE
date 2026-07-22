@@ -42,30 +42,22 @@ Appendix: Artifact Description
 \subsection{Paper's Main Contributions}
 
 \begin{description}
-\item[$C_1$] We present FastMPK, a high-performance sparse matrix power kernel designed to run efficiently on both CPUs and GPUs.
+\item[$C_1$] We present FastMPK, a high-performance sparse matrix power kernel (MPK) that exploits cache reuse across successive SpMVs. FastMPK models the matrix as a dependency graph, recursively partitions it into cache-resident subgraphs, and employs a dependency-preserving runtime scheduler. Evaluated on two x86 CPUs, one ARM CPU, and two NVIDIA GPUs across 110 large SuiteSparse matrices, FastMPK achieves average speedups of up to 1.84$\times$ over state-of-the-art cache-reuse MPK implementations and up to 1.43$\times$ over vendor-tuned libraries.
 
-\item[$C_2$] We propose a cache-reuse strategy for MPK based on dependency-graph partitioning and runtime scheduling, which reduces the matrix memory traffic of a na\"ive MPK by nearly half.
-
-\item[$C_3$] We develop a dependency-aware parallelization scheme that combines coarse-grained and fine-grained parallelism to minimize synchronization overhead on many-core processors.
-
-\item[$C_4$] We conduct a comprehensive evaluation across diverse architectures (two x86 CPUs, one ARM CPU, two NVIDIA GPUs) and 110 large sparse matrices, demonstrating consistent speedups over state-of-the-art MPK implementations and vendor-optimized SpMV libraries.
-
-\item[$C_5$] We demonstrate the practical impact of FastMPK by integrating it into a polynomial preconditioned GMRES solver, where it achieves significant end-to-end speedups with minimal preprocessing overhead.
+\item[$C_2$] We demonstrate the practical impact of FastMPK by integrating it as a polynomial preconditioner into the GMRES solver in Ginkgo, achieving end-to-end speedups of up to 1.68$\times$ on CPU and 1.40$\times$ on GPU with minimal preprocessing overhead.
 \end{description}
 
 \subsection{Computational Artifacts}
 
 \begin{description}
-\item[$A_1$] FastMPK --- CPU version: \\ \url{https://github.com/qleonardo/FastMPK/CPU}
+\item[$A_1$] FastMPK --- CPU and GPU implementations \\
+\url{https://github.com/qleonardo/FastMPK}
 
-\item[$A_1$] FastMPK --- GPU version: \\ \url{https://github.com/qleonardo/FastMPK/GPU}
-
-\item[$A_2$] FastMPK-integrated GMRES --- CPU version: \\ \url{https://github.com/qleonardo/FastMPK/GMRES}
-
-\item[$A_2$] FastMPK-integrated GMRES --- GPU version: \\ \url{https://github.com/qleonardo/FastMPK/GMRES}
+\item[$A_2$] FastMPK-integrated GMRES --- CPU and GPU implementations \\
+\url{https://github.com/qleonardo/FastMPK-GMRES}
 
 \vspace{4pt}
-All artifacts are also archived at: \\ \url{https://doi.org/10.5281/zenodo.XXXXXXX}
+All artifacts are also archived at: \url{https://doi.org/10.5281/zenodo.XXXXXXX}
 
 \end{description}
 
@@ -75,15 +67,10 @@ All artifacts are also archived at: \\ \url{https://doi.org/10.5281/zenodo.XXXXX
 Artifact ID  &  Contributions &  Related \\
              &  Supported     &  Paper Elements \\
 \midrule
-$A_1$ (CPU)  &  $C_1$--$C_4$ & Table III \\
-             &               & Figures 2, 4, 5, 6 \\
+$A_1$   &  $C_1$ & Table III \\
+        &        & Figures 2, 3, 4, 5, 6 \\
 \midrule
-$A_1$ (GPU)  &  $C_1$--$C_4$ & Table III \\
-             &               & Figures 3, 4, 5, 6 \\
-\midrule
-$A_2$ (CPU)  &  $C_5$ & Figure 7 \\
-\midrule
-$A_2$ (GPU)  &  $C_5$ & Figure 7 \\
+$A_2$   &  $C_2$ & Figure 7 \\
 \bottomrule
 \end{tabular}
 \end{center}
@@ -96,26 +83,24 @@ $A_2$ (GPU)  &  $C_5$ & Figure 7 \\
 \newartifact
 \artrel
 
-$A_1$ (FastMPK) is the core computational artifact implementing the sparse matrix power kernel. It includes the following MPK variants:
+$A_1$ (FastMPK) is the core computational artifact implementing the sparse matrix power kernel. It includes the following MPK variants for performance comparison:
 
 \begin{itemize}
-  \item \textbf{CSR}: a baseline MPK that directly calls our CSR-based SpMV.
-  \item \textbf{MKL} (CPU) / \textbf{cuSPARSE} (GPU): MPK that calls the CSR-based SpMV from Intel oneMKL or NVIDIA cuSPARSE.
+  \item \textbf{CSR}: baseline MPK using our CSR-based SpMV.
+  \item \textbf{MKL} (CPU) / \textbf{cuSPARSE} (GPU): MPK using vendor-optimized SpMV from Intel oneMKL or NVIDIA cuSPARSE.
   \item \textbf{FBMPK}: the cache-reuse MPK from~\cite{fbmpk} (CPU only).
   \item \textbf{RACE}: the RACE-based cache-reuse MPK from~\cite{racempk} (CPU only).
   \item \textbf{FastMPK (w/o Level)}: FastMPK without the level-based traversal optimization.
-  \item \textbf{FastMPK}: the full version with cache-reuse blocking, dependency-graph partitioning, runtime scheduling, and level-based traversal.
+  \item \textbf{FastMPK}: the full version with all optimizations enabled.
 \end{itemize}
 
-The CPU version runs on multi-core CPUs (Intel x86, AMD x86, ARM); the GPU version runs on NVIDIA GPUs. Both support double-precision computation.
+Both CPU and GPU implementations are included. The code is compiled in double precision.
 
 \artexp
 
-The measured performance is reported in GFLOPS. Compared to the baseline variants (CSR, MKL/cuSPARSE, FBMPK, RACE), the full FastMPK should show the highest performance on most matrices. The level-based optimization (FastMPK vs.\ FastMPK w/o Level) should further improve performance. These results substantiate the cache-reuse strategy ($C_2$) and the dependency-aware parallelization ($C_3$). Data traffic measurements should confirm that FastMPK roughly halves the memory traffic of a standard MPK.
+The measured performance is reported in GFLOPS. FastMPK should outperform all baselines on most matrices, with larger margins for higher powers $s$ and matrices with high reuse ratios. The level-based optimization should further improve performance over FastMPK (w/o Level). These results substantiate the cache-reuse strategy and dependency-aware parallelization presented in the paper.
 
 \arttime
-
-The expected computational times of this artifact are:
 
 \begin{center}
 \begin{tabular}{ll}
@@ -135,63 +120,57 @@ NVIDIA A100 (GPU)          & $\sim$180 \\
 
 \artinpart{Hardware}
 
-\emph{CPU platforms}: Intel Xeon Max 9468 @ 2.1\,GHz (x86, 48 cores, L2: 2\,MB/core, HBM: 64\,GB), AMD EPYC 7742 @ 1.5\,GHz (x86, 64 cores, L2: 512\,KB/core), and Huawei Kunpeng 920 @ 2.6\,GHz (ARM, 32 cores, L2: 512\,KB/core).
+\emph{CPU}: Intel Xeon Max 9468 @ 2.1\,GHz (48 cores, HBM-only mode), AMD EPYC 7742 @ 1.5\,GHz (64 cores), Huawei Kunpeng 920 @ 2.6\,GHz (32 cores).
 
-\emph{GPU platforms}: NVIDIA H100 SXM5 80\,GB (132 SMs, L2: 50\,MB) and NVIDIA A100 PCIe 40\,GB (108 SMs, L2: 40\,MB).
+\emph{GPU}: NVIDIA H100 SXM5 80\,GB and NVIDIA A100 PCIe 40\,GB.
 
 \artinpart{Software}
 
-\emph{CPU}: Intel oneAPI 2025.1 with oneMKL (Intel platform); GCC 11.2.1 (AMD and Huawei platforms). The LIKWID tool~\cite{treibig2010likwid} is needed for cache/memory traffic measurements.
+\emph{CPU}: Intel oneAPI 2025.1 with oneMKL (Intel), GCC 11.2.1 (AMD/Huawei), OpenMP.
 
-\emph{GPU}: CUDA 12.1 (H100) or CUDA 11.7 (A100), with cuSPARSE. NVIDIA Nsight Compute is needed for cache/memory traffic measurements.
+\emph{GPU}: CUDA 12.1 (H100) or CUDA 11.7 (A100), cuSPARSE.
 
 \artinpart{Datasets / Inputs}
 
-110 large sparse matrices (with number of non-zeros $\ge$ 8,000,000) from the SuiteSparse Matrix Collection\footnote{\url{https://sparse.tamu.edu/}}. An input vector is randomly generated for each matrix. The matrix power $s$ ranges from 1 to 10 (key results at $s=5$ and $s=10$). Seven representative matrices (af\_shell10, audikw\_1, Geo\_1438, gsm\_106857, Serena, Long\_Coup\_dt0, SiO2) are selected for detailed per-matrix analysis.
+110 large sparse matrices (nnz $\ge$ 8,000,000) from the SuiteSparse Matrix Collection\footnote{\url{https://sparse.tamu.edu/}}. An input vector is randomly generated for each matrix. The matrix power $s$ ranges from 1 to 10 (key results at $s=5$ and $s=10$).
 
 \artinpart{Installation and Deployment}
 
-\emph{CPU}: All artifacts are compiled in double precision with \texttt{-O3} and OpenMP enabled. On Intel CPUs we use \texttt{icpc} (Intel oneAPI 2025.1) with MKL; on AMD and Huawei CPUs we use \texttt{g++} 11.2.1. Thread affinity is set to bind each software thread to an individual physical core (no hyperthreading). The number of threads matches the core count of each platform. The Intel Xeon Max 9468 is configured in HBM-only mode.
+\emph{CPU}: Compile with \texttt{make}. On Intel, the Makefile uses \texttt{icpc} with MKL; on AMD/Huawei, switch to \texttt{g++} and remove MKL flags. Threads are bound to physical cores (no hyperthreading), one thread per core. On Xeon Max 9468, use HBM-only mode.
 
-\emph{GPU}: Compiled with \texttt{nvcc} using \texttt{-O3 -arch=sm\_80} (A100) or \texttt{sm\_90} (H100) in double precision. \texttt{cudaFuncSetCacheConfig()} is called to prefer a larger L1 cache for FastMPK.
+\emph{GPU}: Compile with \texttt{make}. Uses \texttt{nvcc} with \texttt{-O3}, targeting the appropriate GPU architecture.
 
 \artcomp
 
-\emph{Workflow:}
-\begin{enumerate}
-  \item For each of the 110 matrices, generate a random input vector.
-  \item For each MPK variant (CSR / MKL-cuSPARSE / FBMPK / RACE / FastMPK-wo-Level / FastMPK), run 100 times per matrix per $s$ value and record the average execution time.
-  \item Compute GFLOPS as $2 \times \text{nnz} \times s \;/\; (\text{time in seconds} \times 10^9)$.
-  \item (Optional) Use LIKWID (CPU) or Nsight Compute (GPU) to measure cache and memory data traffic.
-\end{enumerate}
-
-The CPU version's \texttt{Makefile} produces a single \texttt{main} executable that runs all variants. The GPU version's \texttt{Makefile} produces \texttt{main-double} (and optionally \texttt{main-float}).
+For each matrix and each MPK variant, the program runs 100 iterations and reports the average execution time. A batch script (\texttt{run.sh}) is provided to iterate over all matrices; edit the script to set the matrix directory path. For each matrix, run:
+\begin{center}
+\texttt{./main <matrix.mtx> <name> <s>}
+\end{center}
+The CPU script and GPU script are provided separately.
 
 \artout
 
-Based on the measured average GFLOPS, we can generate Table~III (speedup distributions) and Figures~2--6 (overall performance, per-matrix analysis, cache traffic, and parameter impact). The output CSV file (\texttt{performance\_result.csv}) contains the matrix name, dimensions, and GFLOPS for each variant.
+Each run appends to \texttt{performance\_result.csv}: matrix name, dimensions, and GFLOPS for each variant. Table~III and Figures~2--6 are generated by aggregating results across matrices and $s$ values. The key metric is GFLOPS; FastMPK should achieve the highest values on most matrices.
 
 
 \newartifact
 
 \artrel
 
-$A_2$ integrates FastMPK as a polynomial preconditioner into the GMRES solver from the Ginkgo library\footnote{\url{https://github.com/ginkgo-project/ginkgo}}. It compares two GMRES configurations:
+$A_2$ integrates FastMPK as a polynomial preconditioner into the GMRES solver from the Ginkgo library\footnote{\url{https://github.com/ginkgo-project/ginkgo}}. Two solver configurations are compared:
 
 \begin{itemize}
-  \item \textbf{Ginkgo (baseline)}: polynomial preconditioned GMRES where the preconditioner evaluates the polynomial using Ginkgo's standard CSR-based SpMV called $d$ times sequentially.
-  \item \textbf{FastMPK}: the same solver but with the polynomial evaluation replaced by FastMPK to exploit cache reuse across successive SpMV invocations.
+  \item \textbf{Ginkgo (baseline)}: polynomial preconditioned GMRES using Ginkgo's standard CSR SpMV called sequentially.
+  \item \textbf{FastMPK}: the same solver with polynomial evaluation replaced by FastMPK for cache reuse.
 \end{itemize}
 
-The preconditioner uses a Leja-ordered Newton basis formulation with degree $d=40$. The CPU version uses Ginkgo's \texttt{OmpExecutor}; the GPU version uses \texttt{CudaExecutor}. This artifact demonstrates the end-to-end benefit of FastMPK in a real iterative solver ($C_5$).
+The preconditioner uses a Leja-ordered Newton basis with degree $d=40$. Both CPU (\texttt{OmpExecutor}) and GPU (\texttt{CudaExecutor}) implementations are provided. This artifact demonstrates that FastMPK can be easily integrated to accelerate real iterative solvers ($C_2$).
 
 \artexp
 
-The GMRES solver using FastMPK as the polynomial preconditioner should converge in the same number of iterations as the baseline (since both perform identical arithmetic) but with lower execution time, due to reduced memory traffic from cache reuse. The preprocessing cost of FastMPK should account for less than 5\% of the total solver time. End-to-end speedups of 1.20$\times$--2.86$\times$ (CPU) and a geometric mean of 1.40$\times$ (GPU) are expected across the 7 test matrices.
+Both configurations perform identical arithmetic, so they converge in the same number of iterations. FastMPK should reduce execution time due to lower memory traffic. Expected end-to-end speedups are 1.20$\times$--2.86$\times$ on CPU (geometric mean $\sim$1.68$\times$) and $\sim$1.40$\times$ on GPU. The one-time preprocessing cost should be under 5\% of total solver time.
 
 \arttime
-
-The expected computational times of this artifact are:
 
 \begin{center}
 \begin{tabular}{ll}
@@ -214,41 +193,27 @@ NVIDIA H100 (GPU)         & $\sim$10 \\
 
 \artinpart{Software}
 
-Ginkgo (high-performance numerical linear algebra library)\footnote{\url{https://github.com/ginkgo-project/ginkgo}}, OpenMP, CMake $\ge$ 3.16.
-
-\emph{CPU}: Intel oneAPI 2025.1.
-
-\emph{GPU}: CUDA 12.1, cuBLAS, cuSPARSE.
+Ginkgo\footnote{\url{https://github.com/ginkgo-project/ginkgo}}, CMake $\ge$ 3.16, OpenMP. CPU: Intel oneAPI 2025.1. GPU: CUDA 12.1 with cuBLAS and cuSPARSE.
 
 \artinpart{Datasets / Inputs}
 
-The 7 representative matrices from the SuiteSparse Matrix Collection (af\_shell10, audikw\_1, Geo\_1438, gsm\_106857, Serena, Long\_Coup\_dt0, SiO2). A right-hand side vector $\mathbf{b}$ is randomly generated for each matrix.
+The 7 representative matrices listed in Table~II of the paper (af\_shell10, audikw\_1, Geo\_1438, gsm\_106857, Serena, Long\_Coup\_dt0, SiO2). A random RHS vector $\mathbf{b}$ is generated for each.
 
 \artinpart{Installation and Deployment}
 
-Both CPU and GPU versions use CMake as the build system. The artifacts are compiled in double precision in Release mode with \texttt{-O3}.
-
-\emph{CPU}: Set \texttt{Ginkgo\_DIR} to the Ginkgo installation path, then:
-\begin{verbatim}
-cmake -B build -DGinkgo_DIR=/path/to/ginkgo/lib/cmake/Ginkgo
-cmake --build build
-\end{verbatim}
-
-\emph{GPU}: Additionally requires CUDA Toolkit $\ge$ 11.7. The CMake configuration automatically detects and links cuBLAS and cuSPARSE. Set \texttt{CMAKE\_CUDA\_ARCHITECTURES} to 90 for H100 or 80 for A100.
+Both CPU and GPU versions use CMake in Release mode (\texttt{-O3}):
+\begin{center}
+\texttt{cmake -B build -DGinkgo\_DIR=<path> \&\& cmake --build build}
+\end{center}
+On GPU, additionally set \texttt{-DCMAKE\_CUDA\_ARCHITECTURES=90} for H100 (or 80 for A100).
 
 \artcomp
 
-\emph{Workflow:}
-\begin{enumerate}
-  \item For each matrix, read the matrix from \texttt{.mtx} format via Ginkgo's built-in reader. Compute $\lambda_{\max}$ via power iteration to normalize the matrix and compute the polynomial coefficients.
-  \item Generate a random RHS vector $\mathbf{b}$ and an initial guess $\mathbf{x}_0$.
-  \item Run each GMRES configuration 100 times, measuring average execution time and iteration count.
-  \item The solver uses Krylov dimension 50, relative residual tolerance $10^{-6}$, and a maximum of 1,000 iterations. The preconditioner polynomial degree is $d=40$.
-\end{enumerate}
+For each matrix, the program reads the \texttt{.mtx} file, computes $\lambda_{\max}$ via power iteration, and runs each GMRES configuration 100 times. A batch script is provided; edit it to set the matrix directory. The solver uses Krylov dimension 50, relative residual tolerance $10^{-6}$, maximum 1,000 iterations, and polynomial degree $d=40$.
 
 \artout
 
-Based on the measured average execution time, we can plot Figure~7 (end-to-end speedup of FastMPK-preconditioned GMRES over the Ginkgo baseline). The program outputs each variant's name, iteration count, and execution time to \texttt{stdout}.
+The program outputs to \texttt{stdout}: variant name, iteration count, and execution time. Both variants should report the same iteration count. Figure~7 is generated by computing speedup: $T_{\text{Ginkgo}} / T_{\text{FastMPK}}$.
 
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
@@ -262,68 +227,43 @@ Based on the measured average execution time, we can plot Figure~7 (end-to-end s
 
 \artinpart{Obtaining the Artifact}
 
-The artifact can be downloaded from the public GitHub repositories:
-
-\begin{itemize}
-  \item CPU version: \url{https://github.com/qleonardo/FastMPK/CPU}
-  \item GPU version: \url{https://github.com/qleonardo/FastMPK/GPU}
-\end{itemize}
-
-Alternatively, a single archive is available at \url{https://doi.org/10.5281/zenodo.XXXXXXX}.
+Download from: \url{https://github.com/qleonardo/FastMPK}, or use the Zenodo archive at \url{https://doi.org/10.5281/zenodo.XXXXXXX}.
 
 \artinpart{Software Dependencies}
 
-\emph{CPU}: Intel oneAPI 2025.1 (with MKL) on Intel platforms; GCC $\ge$ 11.2 on AMD and ARM platforms. OpenMP is required (included with the compilers). LIKWID is optional for cache traffic measurements.
+\emph{CPU}: Intel oneAPI 2025.1 with MKL (Intel), or GCC $\ge$ 11.2 (AMD/ARM), with OpenMP.
 
-\emph{GPU}: CUDA Toolkit $\ge$ 11.7, cuSPARSE (included with CUDA). Nsight Compute is optional for cache traffic measurements.
+\emph{GPU}: CUDA Toolkit $\ge$ 11.7 with cuSPARSE.
 
 \artinpart{Datasets}
 
-Download the 110 SuiteSparse matrices (those with $\text{nnz} \ge 8\times 10^6$) from \url{https://sparse.tamu.edu/} in Matrix Market (\texttt{.mtx}) format. Place them under a \texttt{matrix/} directory structured as \texttt{matrix/<name>/<name>.mtx}.
+Download the 110 SuiteSparse matrices with $\text{nnz} \ge 8\times 10^6$ from \url{https://sparse.tamu.edu/} in Matrix Market (\texttt{.mtx}) format. Organize as \texttt{matrix/<name>/<name>.mtx}.
 
 \artinpart{Building the Artifact}
 
-\emph{CPU (Intel)}:
-\begin{verbatim}
-cd FastMPK/CPU
-module load intel/2025.1   # if using modules
-make
-\end{verbatim}
+\emph{CPU (Intel)}: Run \texttt{make}. The Makefile uses Intel oneAPI (\texttt{icpc}) with MKL.
 
-\emph{CPU (AMD / Huawei)}: Modify the \texttt{Makefile} to use \texttt{g++} instead of \texttt{icpc} and remove the MKL linking flags. Then run \texttt{make}.
+\emph{CPU (AMD/Huawei)}: Edit the Makefile to use \texttt{g++} and remove MKL linking flags, then run \texttt{make}.
 
-\emph{GPU}:
-\begin{verbatim}
-cd FastMPK/GPU
-module load cuda/12.1      # H100; use cuda/11.7 for A100
-make double                 # double-precision; or 'make float'
-\end{verbatim}
+\emph{GPU}: Run \texttt{make}. The Makefile uses \texttt{nvcc}; edit the architecture flag if needed (default \texttt{sm\_80} for A100; change to \texttt{sm\_90} for H100).
+
+All platforms produce a single executable \texttt{main} (double precision).
 
 \artinpart{Deployment}
 
-The executable runs directly on the target machine. On CPU platforms, set thread affinity and OpenMP threads, e.g.:
-\begin{verbatim}
-export OMP_NUM_THREADS=48
-numactl --cpunodebind=0 --membind=0 ./main \
-    matrix/af_shell10/af_shell10.mtx af_shell10 5
-\end{verbatim}
-
-On GPU platforms, ensure one GPU is visible and run:
-\begin{verbatim}
-./main-double matrix/af_shell10/af_shell10.mtx af_shell10 5
-\end{verbatim}
+Set thread affinity on CPUs. On Xeon Max 9468, configure HBM-only mode. On GPUs, ensure one GPU is visible. No additional environment setup is needed beyond what is described in the software dependencies.
 
 \artcomp
 
-The experiment consists of two tasks:
-
-$T_1$ \textbf{(Data Preparation)}: For each matrix $\mathbf{A}$, the program automatically generates a random dense vector $\mathbf{x}$ of matching dimension on each run.
-
-$T_2$ \textbf{(Benchmark Execution)}: For each matrix, run the executable with $s \in \{1, 3, 5, 7, 9\}$ (or $\{1, \dots, 10\}$). Each run internally executes 100 iterations of each MPK variant and reports the average time. The scripts \texttt{run3.sh} (CPU) or \texttt{work-all-double.sh} (GPU) can be used to batch-process all matrices.
+A batch run script is provided. Edit the script to set the path to the matrix directory, then execute. For a single matrix, run:
+\begin{center}
+\texttt{./main <matrix.mtx> <name> <s>}
+\end{center}
+where \texttt{<s>} is the matrix power (typically 5 or 10). The program runs each MPK variant 100 times and reports average GFLOPS.
 
 \artout
 
-Each run appends one row to \texttt{performance\_result.csv} with columns: matrix name, dimensions, and GFLOPS for each variant. Table~III and Figures~2--6 are generated by aggregating these CSV files across all matrices and $s$ values. The key metric is GFLOPS; higher values indicate better performance. FastMPK should outperform the other variants on the majority of matrices, especially for larger $s$ and matrices with high reuse ratios.
+Results are appended to \texttt{performance\_result.csv} with columns: matrix name, rows, nnz, and GFLOPS for each MPK variant. Generate Table~III and Figures~2--6 by aggregating across all matrices. FastMPK should achieve the highest GFLOPS on most matrices. Compare FastMPK with FastMPK (w/o Level) to verify the benefit of level-based optimization.
 
 
 \arteval{2}
@@ -331,72 +271,38 @@ Each run appends one row to \texttt{performance\_result.csv} with columns: matri
 
 \artinpart{Obtaining the Artifact}
 
-\begin{itemize}
-  \item CPU version: \url{https://github.com/qleonardo/FastMPK/GMRES}
-  \item GPU version: \url{https://github.com/qleonardo/FastMPK/GMRES}
-\end{itemize}
-
-Both CPU and GPU implementations are hosted in the same repository. Alternatively, use the Zenodo archive.
+Download from: \url{https://github.com/qleonardo/FastMPK-GMRES}, or use the Zenodo archive.
 
 \artinpart{Software Dependencies}
 
-\emph{Both}: CMake $\ge$ 3.16, Ginkgo (build from source or install via package manager: \url{https://github.com/ginkgo-project/ginkgo}), OpenMP.
-
-\emph{CPU}: Intel oneAPI 2025.1 (or GCC $\ge$ 11.2 with OpenMP).
-
-\emph{GPU}: CUDA Toolkit $\ge$ 11.7 with cuBLAS and cuSPARSE.
+CMake $\ge$ 3.16, Ginkgo (from \url{https://github.com/ginkgo-project/ginkgo}), OpenMP. CPU: Intel oneAPI 2025.1 or GCC $\ge$ 11.2. GPU: CUDA $\ge$ 11.7 with cuBLAS and cuSPARSE.
 
 \artinpart{Datasets}
 
-Download the 7 representative SuiteSparse matrices listed in Table~II of the paper. Place them under a \texttt{matrix/} directory in \texttt{.mtx} format.
+Download the 7 matrices listed in Table~II of the paper from SuiteSparse, in \texttt{.mtx} format. Place under a \texttt{matrix/} directory.
 
 \artinpart{Building the Artifact}
 
-\emph{CPU}:
-\begin{verbatim}
-cd GMRES/CPU
-cmake -B build \
-    -DGinkgo_DIR=/path/to/ginkgo/lib/cmake/Ginkgo
-cmake --build build
-\end{verbatim}
-
-\emph{GPU}:
-\begin{verbatim}
-cd GMRES/GPU
-cmake -B build \
-    -DGinkgo_DIR=/path/to/ginkgo/lib/cmake/Ginkgo \
-    -DCMAKE_CUDA_ARCHITECTURES=90   # 90 for H100, 80 for A100
-cmake --build build
-\end{verbatim}
+From the artifact root directory:
+\begin{center}
+\texttt{cmake -B build -DGinkgo\_DIR=<path> \&\& cmake --build build}
+\end{center}
+where \texttt{<path>} points to the Ginkgo CMake configuration (e.g., \texttt{/usr/local/lib/cmake/Ginkgo}). For GPU, add \texttt{-DCMAKE\_CUDA\_ARCHITECTURES=90} (H100) or \texttt{=80} (A100). The build produces \texttt{build/bench}.
 
 \artinpart{Deployment}
 
-\emph{CPU}:
-\begin{verbatim}
-export OMP_NUM_THREADS=48
-./build/bench matrix/af_shell10/af_shell10.mtx
-\end{verbatim}
-
-\emph{GPU}:
-\begin{verbatim}
-./build/bench matrix/af_shell10/af_shell10.mtx
-\end{verbatim}
+Set \texttt{OMP\_NUM\_THREADS} on CPU. On GPU, ensure a CUDA-capable GPU is available. No other configuration is needed.
 
 \artcomp
 
-The experiment consists of two tasks:
-
-$T_1$ \textbf{(Data Preparation)}: Read each matrix $\mathbf{A}$ from \texttt{.mtx} format via Ginkgo's built-in reader. Compute $\lambda_{\max}$ via power iteration to normalize the matrix and determine the polynomial coefficients. Generate a random RHS vector $\mathbf{b}$.
-
-$T_2$ \textbf{(Solver Execution)}: For each matrix, run the baseline Ginkgo and FastMPK-accelerated GMRES configurations 100 times each. Each run measures wall-clock time for the full solve (including preconditioner setup and preprocessing). The polynomial degree is $d=40$, Krylov dimension is 50, relative residual tolerance is $10^{-6}$, and maximum iterations is 1,000.
+A batch script is provided; edit it to point to the matrix directory. For a single run:
+\begin{center}
+\texttt{./build/bench <matrix.mtx>}
+\end{center}
+The program reads the matrix, computes $\lambda_{\max}$, runs both Ginkgo and FastMPK GMRES configurations 100 times each, and reports average times. Solver parameters are hardcoded: $d=40$, Krylov dimension 50, tolerance $10^{-6}$, max 1,000 iterations.
 
 \artout
 
-The program outputs to \texttt{stdout} for each variant:
-\begin{verbatim}
-<variant_name>, <iterations>, <time_seconds>
-\end{verbatim}
-
-Both variants should converge in the same number of iterations (identical arithmetic). Figure~7 is generated by computing the speedup of FastMPK over the Ginkgo baseline: $\text{Speedup} = T_{\text{Ginkgo}} \;/\; T_{\text{FastMPK}}$. FastMPK should achieve speedups of 1.20$\times$--2.86$\times$ on CPU (geometric mean $\sim$1.68$\times$) and a geometric mean of $\sim$1.40$\times$ on GPU. The preprocessing cost (one-time) should account for less than 5\% of the total solver time.
+Output to \texttt{stdout}: variant name, iteration count, and execution time in seconds. Both variants must report identical iteration counts. Compute speedup as $T_{\text{Ginkgo}} / T_{\text{FastMPK}}$ to generate Figure~7. Expected speedups: 1.20$\times$--2.86$\times$ on CPU, $\sim$1.40$\times$ geometric mean on GPU. The preprocessing time (printed separately) should be under 5\% of total solver time.
 
 \end{document}
