@@ -88,9 +88,9 @@ $A_1$ (FastMPK) is the core computational artifact implementing the sparse matri
 \begin{itemize}
   \item \textbf{CSR}: baseline MPK using our CSR-based SpMV.
   \item \textbf{MKL} (CPU) / \textbf{cuSPARSE} (GPU): MPK using vendor-optimized SpMV from Intel oneMKL or NVIDIA cuSPARSE.
-  \item \textbf{FBMPK}: the cache-reuse MPK from~\cite{fbmpk} (CPU only).
-  \item \textbf{RACE}: the RACE-based cache-reuse MPK from~\cite{racempk} (CPU only).
-  \item \textbf{FastMPK (w/o Level)}: FastMPK without the level-based traversal optimization.
+  \item \textbf{FBMPK} (CPU only): the cache-reuse MPK from~\cite{fbmpk}. This is an external baseline; obtain it from the original repository with DOI: \url{https://doi.org/10.1109/IPDPS54959.2023.00046}.
+  \item \textbf{RACE} (CPU only): the RACE-based cache-reuse MPK from~\cite{racempk}. External baseline; DOI: \url{https://doi.org/10.1109/TPDS.2022.3223512}.
+  \item \textbf{FastMPK (w/o Level)} (CPU only): FastMPK without the level-based traversal optimization. Not available on GPU, consistent with the paper.
   \item \textbf{FastMPK}: the full version with all optimizations enabled.
 \end{itemize}
 
@@ -115,6 +115,7 @@ NVIDIA A100 (GPU)          & $\sim$180 \\
 \bottomrule
 \end{tabular}
 \end{center}
+Times are for the full 110-matrix benchmark with $s\in\{5,10\}$. Actual duration varies with the number of matrices, $s$ values, and available cores. The provided \texttt{run.sh} script uses a subset of 7 representative matrices for quick verification (estimated 10--15~mins).
 
 \artin
 
@@ -142,11 +143,11 @@ NVIDIA A100 (GPU)          & $\sim$180 \\
 
 \artcomp
 
-For each matrix and each MPK variant, the program runs 100 iterations and reports the average execution time. A batch script (\texttt{run.sh}) is provided to iterate over all matrices; edit the script to set the matrix directory path and NUMA binding. For each matrix, run:
+For each matrix and each MPK variant, the program runs 100 iterations and reports the average execution time. A batch script (\texttt{run.sh}) is provided with the 7 representative matrices from Table~II for quick verification; edit the script to set the matrix directory path and NUMA binding. For each matrix, run:
 \begin{center}
 \texttt{./main <matrix.mtx> <s>}
 \end{center}
-The matrix name is automatically extracted from the file path. Separate scripts are provided for CPU and GPU.
+The matrix name is automatically extracted from the file path. Separate scripts are provided for CPU and GPU. To reproduce the full 110-matrix results in the paper, replace the matrix list in \texttt{run.sh} with the complete SuiteSparse subset (nnz $\ge$ 8M).
 
 \artout
 
@@ -255,7 +256,7 @@ Set thread affinity with \texttt{OMP\_PROC\_BIND=close} and \texttt{numactl --ph
 
 \artcomp
 
-A batch run script is provided. Edit the script to set the matrix directory path and NUMA binding, then execute. For a single matrix (CPU):
+The provided \texttt{run.sh} script contains the 7 representative matrices from Table~II for quick verification. Edit the script to set the matrix directory path and NUMA binding, then execute. To reproduce the full 110-matrix results, replace the matrix list with the complete SuiteSparse subset. For a single matrix (CPU):
 \begin{center}
 \texttt{OMP\_NUM\_THREADS=<N> OMP\_PROC\_BIND=close numactl --physcpubind=... --membind=0 ./main <matrix.mtx> <s>}
 \end{center}
