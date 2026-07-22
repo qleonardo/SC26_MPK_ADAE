@@ -87,8 +87,8 @@ $A_1$ (FastMPK) is the core computational artifact implementing the sparse matri
 \begin{itemize}
   \item \textbf{CSR}: baseline MPK using our CSR-based SpMV.
   \item \textbf{MKL} (CPU) / \textbf{cuSPARSE} (GPU): MPK using vendor-optimized SpMV from Intel oneMKL or NVIDIA cuSPARSE.
-  \item \textbf{FBMPK} (CPU only): the cache-reuse MPK from~\cite{fbmpk}. This is an external baseline; obtain it from the original repository with DOI: \url{https://doi.org/10.1109/IPDPS54959.2023.00046}.
-  \item \textbf{RACE} (CPU only): the RACE-based cache-reuse MPK from~\cite{racempk}. External baseline; DOI: \url{https://doi.org/10.1109/TPDS.2022.3223512}.
+  \item \textbf{FBMPK} (CPU only): the cache-reuse MPK by Zhang et al.\ (IPDPS 2023). This is an external baseline; obtain it from the original repository with DOI: \url{https://doi.org/10.1109/IPDPS54959.2023.00046}.
+  \item \textbf{RACE} (CPU only): the RACE-based cache-reuse MPK by Alappat et al.\ (IEEE TPDS 2022). External baseline; DOI: \url{https://doi.org/10.1109/TPDS.2022.3223512}.
   \item \textbf{FastMPK (w/o Level)} (CPU only): FastMPK without the level-based traversal optimization. Not available on GPU, consistent with the paper.
   \item \textbf{FastMPK}: the full version with all optimizations enabled.
 \end{itemize}
