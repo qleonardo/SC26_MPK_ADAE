@@ -142,11 +142,11 @@ NVIDIA A100 (GPU)          & $\sim$180 \\
 
 \artcomp
 
-For each matrix and each MPK variant, the program runs 100 iterations and reports the average execution time. A batch script (\texttt{run.sh}) is provided to iterate over all matrices; edit the script to set the matrix directory path. For each matrix, run:
+For each matrix and each MPK variant, the program runs 100 iterations and reports the average execution time. A batch script (\texttt{run.sh}) is provided to iterate over all matrices; edit the script to set the matrix directory path and NUMA binding. For each matrix, run:
 \begin{center}
-\texttt{./main <matrix.mtx> <name> <s>}
+\texttt{./main <matrix.mtx> <s>}
 \end{center}
-The CPU script and GPU script are provided separately.
+The matrix name is automatically extracted from the file path. Separate scripts are provided for CPU and GPU.
 
 \artout
 
@@ -255,11 +255,15 @@ Set thread affinity with \texttt{OMP\_PROC\_BIND=close} and \texttt{numactl --ph
 
 \artcomp
 
-A batch run script is provided. Edit the script to set the path to the matrix directory, then execute. For a single matrix, run:
+A batch run script is provided. Edit the script to set the matrix directory path and NUMA binding, then execute. For a single matrix (CPU):
 \begin{center}
-\texttt{./main <matrix.mtx> <name> <s>}
+\texttt{OMP\_NUM\_THREADS=<N> OMP\_PROC\_BIND=close numactl --physcpubind=... --membind=0 ./main <matrix.mtx> <s>}
 \end{center}
-where \texttt{<s>} is the matrix power (typically 5 or 10). The program runs each MPK variant 100 times and reports average GFLOPS.
+For GPU:
+\begin{center}
+\texttt{./main <matrix.mtx> <s>}
+\end{center}
+where \texttt{<s>} is the matrix power (typically 5 or 10). The matrix name is extracted from the file path. The program runs each MPK variant 100 times and reports average GFLOPS.
 
 \artout
 
@@ -295,7 +299,11 @@ Set \texttt{OMP\_NUM\_THREADS} and \texttt{OMP\_PROC\_BIND=close} with \texttt{n
 
 \artcomp
 
-A batch script is provided; edit it to point to the matrix directory. For a single run:
+A batch script is provided; edit it to point to the matrix directory and set NUMA binding. For a single run (CPU):
+\begin{center}
+\texttt{OMP\_NUM\_THREADS=<N> OMP\_PROC\_BIND=close numactl --physcpubind=... --membind=0 ./build/bench <matrix.mtx>}
+\end{center}
+For GPU:
 \begin{center}
 \texttt{./build/bench <matrix.mtx>}
 \end{center}
