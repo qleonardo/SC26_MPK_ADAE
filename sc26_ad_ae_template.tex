@@ -132,7 +132,7 @@ Times are for the full 110-matrix benchmark with $s\in\{5,10\}$. Actual duration
 
 \artinpart{Datasets / Inputs}
 
-110 large sparse matrices (nnz $\ge$ 8,000,000) from the SuiteSparse Matrix Collection\footnote{\url{https://sparse.tamu.edu/}}. An input vector is randomly generated for each matrix. The matrix power $s$ ranges from 1 to 10 (key results at $s=5$ and $s=10$).
+A Python script (\texttt{download\_matrices.py}) is provided at the repository root to download the 7 representative matrices from the SuiteSparse Matrix Collection\footnote{\url{https://sparse.tamu.edu/}}. Run \texttt{python download\_matrices.py} to populate the \texttt{matrix/} directory. The full evaluation uses 110 large sparse matrices (nnz $\ge$ 8,000,000) from the same collection. An input vector is randomly generated for each matrix. The matrix power $s$ ranges from 1 to 10 (key results at $s=5$ and $s=10$).
 
 \artinpart{Installation and Deployment}
 
@@ -197,7 +197,7 @@ Ginkgo (\url{https://github.com/ginkgo-project/ginkgo}), CMake $\ge$ 3.16, OpenM
 
 \artinpart{Datasets / Inputs}
 
-The 7 representative matrices listed in Table~II of the paper (af\_shell10, audikw\_1, Geo\_1438, gsm\_106857, Serena, Long\_Coup\_dt0, SiO2). A random RHS vector $\mathbf{b}$ is generated for each.
+The 7 representative matrices listed in Table~II of the paper (af\_shell10, audikw\_1, Geo\_1438, gsm\_106857, Serena, Long\_Coup\_dt0, SiO2). Use \texttt{python download\_matrices.py} to download them into the \texttt{matrix/} directory. A random RHS vector $\mathbf{b}$ is generated for each.
 
 \artinpart{Installation and Deployment}
 
@@ -237,7 +237,7 @@ Download from: \url{https://github.com/qleonardo/FastMPK}, or use the Zenodo arc
 
 \artinpart{Datasets}
 
-Download the 110 SuiteSparse matrices with $\text{nnz} \ge 8\times 10^6$ from \url{https://sparse.tamu.edu/} in Matrix Market (\texttt{.mtx}) format. Organize as \texttt{matrix/<name>/<name>.mtx}.
+Download the 110 SuiteSparse matrices with $\text{nnz} \ge 8\times 10^6$ from \url{https://sparse.tamu.edu/} in Matrix Market (\texttt{.mtx}) format. Organize as \texttt{matrix/<name>/<name>.mtx}. For quick verification of the 7 representative matrices, use \texttt{python download\_matrices.py}.
 
 \artinpart{Building the Artifact}
 
@@ -283,7 +283,7 @@ CMake $\ge$ 3.16, Ginkgo (\url{https://github.com/ginkgo-project/ginkgo}), OpenM
 
 \artinpart{Datasets}
 
-Download the 7 matrices listed in Table~II of the paper from SuiteSparse, in \texttt{.mtx} format. Place under a \texttt{matrix/} directory.
+Download the 7 matrices listed in Table~II of the paper from SuiteSparse, in \texttt{.mtx} format. Use \texttt{python download\_matrices.py} to fetch them into the \texttt{matrix/} directory.
 
 \artinpart{Building the Artifact}
 
