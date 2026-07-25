@@ -18,8 +18,8 @@
 % Uncomment/comment the following usetag lines
 % if you would like to get an explanation or an example.
 % Don't forget to comment them for the final submission.
-\usetag{explanation}
-\usetag{example}
+% \usetag{explanation}
+% \usetag{example}
 
 \begin{document}
 
@@ -42,7 +42,7 @@ Appendix: Artifact Description
 \subsection{Paper's Main Contributions}
 
 \begin{description}
-\item[$C_1$] We present FastMPK, a high-performance sparse matrix power kernel (MPK) that exploits cache reuse across successive SpMVs. FastMPK models the matrix as a dependency graph, recursively partitions it into cache-resident subgraphs, and employs a dependency-preserving runtime scheduler. Evaluated on two x86 CPUs, one ARM CPU, and two NVIDIA GPUs across 110 large SuiteSparse matrices, FastMPK achieves average speedups of up to 1.84$\times$ over state-of-the-art cache-reuse MPK implementations and up to 1.43$\times$ over vendor-tuned libraries.
+\item[$C_1$] We present FastMPK, a high-performance sparse matrix power kernel (MPK) that exploits cache reuse across successive SpMVs. FastMPK models the matrix as a dependency graph, recursively partitions it into cache-resident subgraphs, and employs a dependency-preserving runtime scheduler. Evaluated on two x86 CPUs, one ARM CPU, and two NVIDIA GPUs across large SuiteSparse matrices, FastMPK achieves average speedups of up to 1.84$\times$ over state-of-the-art cache-reuse MPK implementations and up to 1.43$\times$ over vendor-tuned libraries.
 
 \item[$C_2$] We demonstrate the practical impact of FastMPK by integrating it as a polynomial preconditioner into the GMRES solver in Ginkgo, achieving end-to-end speedups of up to 1.68$\times$ on CPU and 1.40$\times$ on GPU with minimal preprocessing overhead.
 \end{description}
@@ -52,11 +52,11 @@ Appendix: Artifact Description
 \begin{description}
 \item[$A_1$] FastMPK --- CPU and GPU implementations \\
 \url{https://github.com/qleonardo/FastMPK} \\
-Zenodo: \url{https://doi.org/10.5281/zenodo.21496101}
+Zenodo: \url{https://doi.org/10.5281/zenodo.21554566}
 
 \item[$A_2$] FastMPK-integrated GMRES --- CPU and GPU implementations \\
 \url{https://github.com/qleonardo/FastMPK-GMRES} \\
-Zenodo: \url{https://doi.org/10.5281/zenodo.21496102}
+Zenodo: \url{https://doi.org/10.5281/zenodo.21554575}
 
 \end{description}
 
@@ -106,15 +106,15 @@ The measured performance is reported in GFLOPS. FastMPK should outperform all ba
 \toprule
 Platform & Estimated Time (mins) \\
 \midrule
-Intel Xeon Max 9468 (CPU)  & $\sim$180 \\
-AMD EPYC 7742 (CPU)        & $\sim$210 \\
-Huawei Kunpeng 920 (CPU)   & $\sim$240 \\
-NVIDIA H100 (GPU)          & $\sim$120 \\
-NVIDIA A100 (GPU)          & $\sim$180 \\
+Intel Xeon Max 9468 (CPU)  & $\sim$15 \\
+AMD EPYC 7742 (CPU)        & $\sim$20 \\
+Huawei Kunpeng 920 (CPU)   & $\sim$20 \\
+NVIDIA H100 (GPU)          & $\sim$10 \\
+NVIDIA A100 (GPU)          & $\sim$15 \\
 \bottomrule
 \end{tabular}
 \end{center}
-Times are for the full 110-matrix benchmark with $s\in\{5,10\}$. Actual duration varies with the number of matrices, $s$ values, and available cores. The provided \texttt{run.sh} script uses a subset of 7 representative matrices for quick verification (estimated 10--15~mins).
+Times are for the 7 representative matrices with $s\in\{5,10\}$. Actual duration varies with the number of matrices, $s$ values, and available cores.
 
 \artin
 
@@ -132,7 +132,7 @@ Times are for the full 110-matrix benchmark with $s\in\{5,10\}$. Actual duration
 
 \artinpart{Datasets / Inputs}
 
-A Python script (\texttt{download\_matrices.py}) is provided at the repository root to download the 7 representative matrices from the SuiteSparse Matrix Collection\footnote{\url{https://sparse.tamu.edu/}}. Run \texttt{python download\_matrices.py} to populate the \texttt{matrix/} directory. The full evaluation uses 110 large sparse matrices (nnz $\ge$ 8,000,000) from the same collection. An input vector is randomly generated for each matrix. The matrix power $s$ ranges from 1 to 10 (key results at $s=5$ and $s=10$).
+A Python script (\texttt{download\_matrices.py}) is provided at the repository root to download the 7 representative matrices from the SuiteSparse Matrix Collection\footnote{\url{https://sparse.tamu.edu/}}. Run \texttt{python download\_matrices.py} to populate the \texttt{matrix/} directory. An input vector is randomly generated for each matrix. The matrix power $s$ ranges from 1 to 10 (key results at $s=5$ and $s=10$).
 
 \artinpart{Installation and Deployment}
 
@@ -146,7 +146,7 @@ For each matrix and each MPK variant, the program runs 100 iterations and report
 \begin{center}
 \texttt{./main <matrix.mtx> <s>}
 \end{center}
-The matrix name is automatically extracted from the file path. Separate scripts are provided for CPU and GPU. To reproduce the full 110-matrix results in the paper, replace the matrix list in \texttt{run.sh} with the complete SuiteSparse subset (nnz $\ge$ 8M).
+The matrix name is automatically extracted from the file path. Separate scripts are provided for CPU and GPU.
 
 \artout
 
@@ -177,8 +177,8 @@ Both configurations perform identical arithmetic, so they converge in the same n
 \toprule
 Platform & Estimated Time (mins) \\
 \midrule
-Intel Xeon Max 9468 (CPU) & $\sim$20 \\
-NVIDIA H100 (GPU)         & $\sim$10 \\
+Intel Xeon Max 9468 (CPU) & $\sim$5 \\
+NVIDIA H100 (GPU)         & $\sim$2 \\
 \bottomrule
 \end{tabular}
 \end{center}
@@ -227,7 +227,7 @@ The program outputs to \texttt{stdout}: variant name, iteration count, and execu
 
 \artinpart{Obtaining the Artifact}
 
-Download from: \url{https://github.com/qleonardo/FastMPK}, or use the Zenodo archive at \url{https://doi.org/10.5281/zenodo.21496101}.
+Download from: \url{https://github.com/qleonardo/FastMPK}, or use the Zenodo archive at \url{https://doi.org/10.5281/zenodo.21554566}.
 
 \artinpart{Software Dependencies}
 
@@ -237,7 +237,7 @@ Download from: \url{https://github.com/qleonardo/FastMPK}, or use the Zenodo arc
 
 \artinpart{Datasets}
 
-Download the 110 SuiteSparse matrices with $\text{nnz} \ge 8\times 10^6$ from \url{https://sparse.tamu.edu/} in Matrix Market (\texttt{.mtx}) format. Organize as \texttt{matrix/<name>/<name>.mtx}. For quick verification of the 7 representative matrices, use \texttt{python download\_matrices.py}.
+Run \texttt{python download\_matrices.py} to fetch the 7 representative matrices from the SuiteSparse Matrix Collection\footnote{\url{https://sparse.tamu.edu/}} in Matrix Market (\texttt{.mtx}) format into the \texttt{matrix/} directory.
 
 \artinpart{Building the Artifact}
 
@@ -255,7 +255,7 @@ Set thread affinity with \texttt{OMP\_PROC\_BIND=close} and \texttt{numactl --ph
 
 \artcomp
 
-The provided \texttt{run.sh} script contains the 7 representative matrices from Table~II for quick verification. Edit the script to set the matrix directory path and NUMA binding, then execute. To reproduce the full 110-matrix results, replace the matrix list with the complete SuiteSparse subset. For a single matrix (CPU):
+The provided \texttt{run.sh} script contains the 7 representative matrices from Table~II. Edit the script to set the matrix directory path and NUMA binding, then execute. For a single matrix (CPU):
 \begin{center}
 \texttt{OMP\_NUM\_THREADS=<N> OMP\_PROC\_BIND=close numactl --physcpubind=... --membind=0 ./main <matrix.mtx> <s>}
 \end{center}
@@ -275,7 +275,7 @@ Results are appended to \texttt{performance\_result.csv} with columns: matrix na
 
 \artinpart{Obtaining the Artifact}
 
-Download from: \url{https://github.com/qleonardo/FastMPK-GMRES}, or use the Zenodo archive at \url{https://doi.org/10.5281/zenodo.21496102}.
+Download from: \url{https://github.com/qleonardo/FastMPK-GMRES}, or use the Zenodo archive at \url{https://doi.org/10.5281/zenodo.21554575}.
 
 \artinpart{Software Dependencies}
 
