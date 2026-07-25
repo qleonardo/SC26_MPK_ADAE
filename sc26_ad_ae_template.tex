@@ -42,7 +42,7 @@ Appendix: Artifact Description
 \subsection{Paper's Main Contributions}
 
 \begin{description}
-\item[$C_1$] We present FastMPK, a high-performance sparse matrix power kernel (MPK) that exploits cache reuse across successive SpMVs. FastMPK models the matrix as a dependency graph, recursively partitions it into cache-resident subgraphs, and employs a dependency-preserving runtime scheduler. Evaluated on two x86 CPUs, one ARM CPU, and two NVIDIA GPUs across large SuiteSparse matrices, FastMPK achieves average speedups of up to 1.84$\times$ over state-of-the-art cache-reuse MPK implementations and up to 1.43$\times$ over vendor-tuned libraries.
+\item[$C_1$] We present FastMPK, a high-performance sparse matrix power kernel (MPK) that exploits cache reuse across successive SpMVs. FastMPK models the matrix as a dependency graph, recursively partitions it into cache-resident subgraphs, and employs a dependency-preserving runtime scheduler. Evaluated on two x86 CPUs, one ARM CPU, and two NVIDIA GPUs across 110 large SuiteSparse matrices, FastMPK achieves average speedups of up to 1.84$\times$ over state-of-the-art cache-reuse MPK implementations and up to 1.43$\times$ over vendor-tuned libraries.
 
 \item[$C_2$] We demonstrate the practical impact of FastMPK by integrating it as a polynomial preconditioner into the GMRES solver in Ginkgo, achieving end-to-end speedups of up to 1.68$\times$ on CPU and 1.40$\times$ on GPU with minimal preprocessing overhead.
 \end{description}
@@ -106,15 +106,15 @@ The measured performance is reported in GFLOPS. FastMPK should outperform all ba
 \toprule
 Platform & Estimated Time (mins) \\
 \midrule
-Intel Xeon Max 9468 (CPU)  & $\sim$15 \\
-AMD EPYC 7742 (CPU)        & $\sim$20 \\
-Huawei Kunpeng 920 (CPU)   & $\sim$20 \\
-NVIDIA H100 (GPU)          & $\sim$10 \\
-NVIDIA A100 (GPU)          & $\sim$15 \\
+Intel Xeon Max 9468 (CPU)  & $\sim$180 \\
+AMD EPYC 7742 (CPU)        & $\sim$210 \\
+Huawei Kunpeng 920 (CPU)   & $\sim$240 \\
+NVIDIA H100 (GPU)          & $\sim$120 \\
+NVIDIA A100 (GPU)          & $\sim$180 \\
 \bottomrule
 \end{tabular}
 \end{center}
-Times are for the 7 representative matrices with $s\in\{5,10\}$. Actual duration varies with the number of matrices, $s$ values, and available cores.
+Times are for the 110-matrix benchmark with $s\in\{5,10\}$. Actual duration varies with the number of matrices, $s$ values, and available cores. The provided \texttt{run.sh} uses the 7 representative matrices for quick verification (estimated 10--15~mins).
 
 \artin
 
@@ -132,7 +132,7 @@ Times are for the 7 representative matrices with $s\in\{5,10\}$. Actual duration
 
 \artinpart{Datasets / Inputs}
 
-A Python script (\texttt{download\_matrices.py}) is provided at the repository root to download the 7 representative matrices from the SuiteSparse Matrix Collection\footnote{\url{https://sparse.tamu.edu/}}. Run \texttt{python download\_matrices.py} to populate the \texttt{matrix/} directory. An input vector is randomly generated for each matrix. The matrix power $s$ ranges from 1 to 10 (key results at $s=5$ and $s=10$).
+A Python script (\texttt{download\_matrices.py}) is provided at the repository root to download the 7 representative matrices from the SuiteSparse Matrix Collection\footnote{\url{https://sparse.tamu.edu/}}. Run \texttt{python download\_matrices.py} to populate the \texttt{matrix/} directory. The full evaluation uses 110 large sparse matrices (nnz $\ge$ 8,000,000) from the same collection. An input vector is randomly generated for each matrix. The matrix power $s$ ranges from 1 to 10 (key results at $s=5$ and $s=10$).
 
 \artinpart{Installation and Deployment}
 
@@ -146,7 +146,7 @@ For each matrix and each MPK variant, the program runs 100 iterations and report
 \begin{center}
 \texttt{./main <matrix.mtx> <s>}
 \end{center}
-The matrix name is automatically extracted from the file path. Separate scripts are provided for CPU and GPU.
+The matrix name is automatically extracted from the file path. Separate scripts are provided for CPU and GPU. To reproduce the full results, obtain all 110 matrices from SuiteSparse and replace the matrix list in \texttt{run.sh}.
 
 \artout
 
@@ -177,8 +177,8 @@ Both configurations perform identical arithmetic, so they converge in the same n
 \toprule
 Platform & Estimated Time (mins) \\
 \midrule
-Intel Xeon Max 9468 (CPU) & $\sim$5 \\
-NVIDIA H100 (GPU)         & $\sim$2 \\
+Intel Xeon Max 9468 (CPU) & $\sim$20 \\
+NVIDIA H100 (GPU)         & $\sim$10 \\
 \bottomrule
 \end{tabular}
 \end{center}
