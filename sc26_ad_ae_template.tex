@@ -87,8 +87,8 @@ $A_1$ (FastMPK) is the core computational artifact implementing the sparse matri
 \begin{itemize}
   \item \textbf{CSR}: baseline MPK using our CSR-based SpMV.
   \item \textbf{MKL} (CPU) / \textbf{cuSPARSE} (GPU): MPK using vendor-optimized SpMV from Intel oneMKL or NVIDIA cuSPARSE.
-  \item \textbf{FBMPK} (CPU only): the cache-reuse MPK by Zhang et al.\ (IPDPS 2023). This is an external baseline; obtain it from the original repository with DOI: \url{https://doi.org/10.1109/IPDPS54959.2023.00046}.
-  \item \textbf{RACE} (CPU only): the RACE-based cache-reuse MPK by Alappat et al.\ (IEEE TPDS 2022). External baseline; DOI: \url{https://doi.org/10.1109/TPDS.2022.3223512}.
+  \item \textbf{FBMPK} (CPU only): the cache-reuse MPK by Zhang et al.\ (IPDPS 2023). This is an external baseline; DOI: \url{https://doi.org/10.1109/IPDPS54959.2023.00046}. The source code is not publicly available; we obtained it directly from the original authors upon request and include it in our artifact repository with their permission.
+  \item \textbf{RACE} (CPU only): the RACE-based cache-reuse MPK by Alappat et al.\ (IEEE TPDS 2022). External baseline; DOI: \url{https://doi.org/10.1109/TPDS.2022.3223512}. Code: \url{https://github.com/RRZE-HPC/RACE}; Zenodo: \url{https://doi.org/10.5281/zenodo.13071390}.
   \item \textbf{FastMPK (w/o Level)} (CPU only): FastMPK without the level-based traversal optimization. Not available on GPU, consistent with the paper.
   \item \textbf{FastMPK}: the full version with all optimizations enabled.
 \end{itemize}
@@ -193,7 +193,7 @@ NVIDIA H100 (GPU)         & $\sim$10 \\
 
 \artinpart{Software}
 
-Ginkgo (\url{https://github.com/ginkgo-project/ginkgo}), CMake $\ge$ 3.16, OpenMP. CPU: Intel oneAPI 2025.1. GPU: CUDA 12.1 with cuBLAS and cuSPARSE.
+Ginkgo v1.11.0 (\url{https://github.com/ginkgo-project/ginkgo}), CMake $\ge$ 3.16, OpenMP. CPU: Intel oneAPI 2025.1. GPU: CUDA 12.1 with cuBLAS and cuSPARSE.
 
 \artinpart{Datasets / Inputs}
 
@@ -279,7 +279,7 @@ Download from: \url{https://github.com/qleonardo/FastMPK-GMRES}, or use the Zeno
 
 \artinpart{Software Dependencies}
 
-CMake $\ge$ 3.16, Ginkgo (\url{https://github.com/ginkgo-project/ginkgo}), OpenMP. CPU: Intel oneAPI 2025.1 or GCC $\ge$ 11.2. GPU: CUDA $\ge$ 11.7 with cuBLAS and cuSPARSE.
+CMake $\ge$ 3.16, Ginkgo v1.11.0 (\url{https://github.com/ginkgo-project/ginkgo}), OpenMP. CPU: Intel oneAPI 2025.1 or GCC $\ge$ 11.2. GPU: CUDA $\ge$ 11.7 with cuBLAS and cuSPARSE.
 
 \artinpart{Datasets}
 
