@@ -157,7 +157,7 @@ Each run appends to \texttt{performance\_result.csv}: matrix name, dimensions, a
 
 \artrel
 
-$A_2$ integrates FastMPK as a polynomial preconditioner into the GMRES solver from the Ginkgo library\footnote{\url{https://github.com/ginkgo-project/ginkgo}}. Two solver configurations are compared:
+$A_2$ integrates FastMPK as a polynomial preconditioner into the GMRES solver from the Ginkgo (v1.11.0) library\footnote{\url{https://github.com/ginkgo-project/ginkgo}}. Two solver configurations are compared:
 
 \begin{itemize}
   \item \textbf{Ginkgo (baseline)}: polynomial preconditioned GMRES using Ginkgo's standard CSR SpMV called sequentially.
