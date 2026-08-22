@@ -136,7 +136,7 @@ A Python script (\texttt{download\_matrices.py}) is provided at the repository r
 
 \artinpart{Installation and Deployment}
 
-\emph{CPU}: Compile with \texttt{make}. On Intel, the Makefile uses \texttt{icpc} with MKL; on AMD/Huawei, switch to \texttt{g++} and remove MKL flags. Set thread affinity with \texttt{OMP\_PROC\_BIND=close} and \texttt{numactl --physcpubind=... --membind=0}, one thread per physical core (no hyperthreading). On Xeon Max 9468, use HBM-only mode.
+\emph{CPU}: Compile with \texttt{make}. On Intel, the Makefile uses \texttt{icpx} with MKL; on AMD/Huawei, switch to \texttt{g++} and remove MKL flags. Set thread affinity with \texttt{OMP\_PROC\_BIND=close} and \texttt{numactl --physcpubind=... --membind=0}, one thread per physical core (no hyperthreading). On Xeon Max 9468, use HBM-only mode.
 
 \emph{GPU}: Compile with \texttt{make}. Uses \texttt{nvcc} with \texttt{-O3}, targeting the appropriate GPU architecture.
 
@@ -209,7 +209,7 @@ On GPU, additionally set \texttt{-DCMAKE\_CUDA\_ARCHITECTURES=90} for H100 (or 8
 
 \artcomp
 
-For each matrix, the program reads the \texttt{.mtx} file, computes $\lambda_{\max}$ via power iteration, and runs each GMRES configuration 100 times. A batch script is provided; edit it to set the matrix directory. The solver uses Krylov dimension 50, relative residual tolerance $10^{-6}$, maximum 1,000 iterations, and polynomial degree $d=40$.
+For each matrix, the program reads the \texttt{.mtx} file, computes $\lambda_{\max}$ via power iteration, and runs each GMRES configuration 100 times. A batch script is provided; edit it to set the matrix directory. The solver uses Krylov dimension 100, relative residual tolerance $10^{-6}$, maximum 1,000 iterations, and polynomial degree $d=40$.
 
 \artout
 
@@ -241,7 +241,7 @@ Run \texttt{python download\_matrices.py} to fetch the 7 representative matrices
 
 \artinpart{Building the Artifact}
 
-\emph{CPU (Intel)}: Run \texttt{make}. The Makefile uses Intel oneAPI (\texttt{icpc}) with MKL.
+\emph{CPU (Intel)}: Run \texttt{make}. The Makefile uses Intel oneAPI (\texttt{icpx}) with MKL.
 
 \emph{CPU (AMD/Huawei)}: Edit the Makefile to use \texttt{g++} and remove MKL linking flags, then run \texttt{make}.
 
@@ -307,7 +307,7 @@ For GPU:
 \begin{center}
 \texttt{./build/bench <matrix.mtx>}
 \end{center}
-The program reads the matrix, computes $\lambda_{\max}$, runs both Ginkgo and FastMPK GMRES configurations 100 times each, and reports average times. Solver parameters are hardcoded: $d=40$, Krylov dimension 50, tolerance $10^{-6}$, max 1,000 iterations.
+The program reads the matrix, computes $\lambda_{\max}$, runs both Ginkgo and FastMPK GMRES configurations 100 times each, and reports average times. Solver parameters are hardcoded: $d=40$, Krylov dimension 100, tolerance $10^{-6}$, max 1,000 iterations.
 
 \artout
 
